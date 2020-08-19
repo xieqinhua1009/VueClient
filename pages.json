@@ -1,6 +1,6 @@
 {
 	"easycom": {
-			"^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
+		"^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
 	},
 	"pages": [ //pages数组中第一项表示应用启动页,
 		{
@@ -50,9 +50,9 @@
 		"navigationBarTextStyle": "white",
 		"navigationBarBackgroundColor": "#0faeff",
 		"backgroundColor": "#fbf9fe",
-		"navigationStyle":"custom",
-		"app-plus":{
-			"titleNView":false
+		"navigationStyle": "custom",
+		"app-plus": {
+			"titleNView": false
 		}
 	}
 }
