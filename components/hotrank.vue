@@ -4,22 +4,23 @@
 			<scroll-view :scroll-y="true" scroll-with-animation="true" style="width: 100%; height: 1120rpx;">
 				<view v-for="(item,index) in userList" :key="index" style="border-bottom: solid 0.5px #555555;height: 60px;">
 					<view v-if="index<3" class="Redcircle">
-						<view class="textbox" style="text-align: center; padding: 7px;">
+						<view class="textbox" style="text-align: center; padding: 8px;color: #FFFFFF;">
 							{{index+1}}
 						</view>
 					</view>
 					<view v-else class="Bluecircle">
-						<view class="textbox" style="text-align: center; padding: 7px;">
+						<view class="textbox" style="text-align: center; padding: 8px; color: #FFFFFF;">
 							{{index+1}}
 						</view>
 					</view>
 					<view style="margin-left: 70px;margin-top: -30px;">{{item}}</view>
-					<view style="margin-left: 260px;margin-top: -22px;color: #007AFF;">积分:{{JFList[index]}}</view>
+					<view style="margin-left: 180px;margin-top: -22px;color: #007AFF;">积分:{{JFList[index]}}</view>
+					<u-button style="margin-left: 265px;bottom: 25px;" type="warning" shape="circle">👍点赞</u-button>
 				</view>
 			</scroll-view>
 		</view>
+		<u-button>123</u-button>
 	</view>
-
 </template>
 
 <script>

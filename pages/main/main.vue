@@ -9,7 +9,9 @@
 			 <view class="login-type">
 			 	<view v-for="(item,index) in chattypeList" :key="index" @click="chatTypeClick(index)" :class="{act: chattype === index}"
 			 	 class="login-type-btn">{{item}}</view>
+				 <u-image src="../../static/img/face.jpg" style="width: 40px;height: 40px; border-radius: 50%;left: 10px;" @tap="OpenMyData"></u-image>
 			 </view>
+			 
 			 <hmchat :datas="chatlist" ref="hmchat" v-if="chattype===0"></hmchat>
 			 <privatechat :datas="privatechatlist" ref="privatechat" v-else-if ="chattype===1"></privatechat>
 			 <users ref="users" v-else-if ="chattype===2"></users>
@@ -136,6 +138,13 @@
 			chatTypeClick(index){
 				this.chattype = index
 			},
+			OpenMyData(){
+				uni.navigateTo({
+					url:"../user/user",
+					animationType: 'pop-in',
+					    animationDuration: 500
+				})
+			},
 			guideToLogin() {
 				uni.showModal({
 					title: '未登录',
@@ -176,15 +185,16 @@
 	
 	.login-type-btn {
 		line-height: 30px;
-		width: 20%;
+		width: 17%;
 		text-align: center;
+		font-weight: bold;
 	}
 	
 	.login-type-btn.act {
 		color: #0FAEFF;
 		border-bottom: solid 1px #ff9900;
 		background-color: #FFFFFF;
-		width:20%;
+		width:17%;
 		text-align: center;
 	}
 	

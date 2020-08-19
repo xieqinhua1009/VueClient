@@ -42,6 +42,9 @@
 			<view class="btn-row">
 				<button v-if="hasLogin" class="primary" type="primary" @tap="bindLogout">退出登录</button>
 			</view>
+			<view style="padding: 10px;">
+				<button v-if="hasLogin" class="warning" type="primary" @tap="BackWin" >返回直播间</button>
+			</view>
 		</view>
 	</view>
 </template>
@@ -67,6 +70,13 @@
 				uni.navigateTo({
 					url: '../login/login',
 				});
+			},
+			BackWin(){
+				uni.navigateTo({
+					url:'../main/main',
+					animationType: 'pop-in',
+					    animationDuration: 500
+				})
 			},
 			bindLogout() {
 				const loginType = uni.getStorageSync('login_type')
