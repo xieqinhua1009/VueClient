@@ -18,7 +18,7 @@
 			 <hotrank ref="hotrank" v-else-if ="chattype===3"></hotrank>
 			 <rank ref="rank" v-else-if ="chattype===4"></rank>
 		</view>
-		<view v-if="!hasLogin" class="hello">
+		<view v-if="!hasLogin">
 			<!-- <live-player
 			  src="rtmp://202.69.69.180:443/webcast/bshdlive-pc"
 			  autoplay
@@ -26,12 +26,9 @@
 			  @error="error"
 			  style="width: 300px; height: 225px;"
 			/> -->
+			<image src="../../static/img/Logo.jpg" style="width: 100%;height: 400px;"></image>
 			<view class="title">
 				您好，请您先登陆后观看。
-			</view>
-			<view class="ul">
-				<view>这是 uni-app 带登录模板的示例App首页。</view>
-				<view>在 “我的” 中点击 “登录” 可以 “登录您的账户”</view>
 			</view>
 		</view>
 	</view>
