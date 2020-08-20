@@ -109,6 +109,38 @@ page{
 		}
 	}
 }
+.popup-giftlayer{
+	&.showLayer2{transform: translate3d(0,-55vw,0);}
+	transition: all .15s linear;
+	width: 100%;
+	height: 42vw;
+	padding: 10upx 2%;
+	background-color: #f3f3f3;
+	border-top: solid 1upx #ddd;
+	position: fixed;
+	z-index: 20;
+	top: 100%;
+	.gift-swiper{
+		height: 42vw;
+		swiper-item{
+			display: flex;
+			align-content: flex-start;
+			flex-wrap: wrap;
+			view{
+				width: 24vw;
+				height: 18vw;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				image{
+					width: 20vw;
+					height: 20vw;
+				}
+			}
+		}
+	}
+}
+
 .input-box{
 	width: 98%;
 	min-height: 100upx;

@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<view class="content" @touchstart="hideDrawer">
+		<view class="content" @touchstart="hideDrawer" @click="hideDrawer2">
 			<scroll-view class="msg-list" scroll-y="true" :scroll-with-animation="scrollAnimation" :scroll-top="scrollTop" :scroll-into-view="scrollToView" @scrolltoupper="loadHistory" upper-threshold="50">
 				<!-- 加载历史数据waitingUI -->
 				<view class="loading">
@@ -122,6 +122,17 @@
 				</view>
 			</view>
 		</view>
+		<!-- 礼物抽屉栏 -->
+		<view class="popup-giftlayer" :class="popupLayerClass2" @touchmove.stop.prevent="discard">
+			<!-- 表情 --> 
+			<swiper class="gift-swiper" :class="{hidden:hideEmoji2}" indicator-dots="true" duration="150">
+				<swiper-item v-for="(page,pid) in giftList" :key="pid">
+					<view v-for="(em,eid) in page" :key="eid" @tap="addgift(em)">
+						<image mode="widthFix" :src="'/static/img/gift/'+em.url"></image>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
 		<!-- 底部输入栏 -->
 		<view class="input-box" :class="popupLayerClass" @touchmove.stop.prevent="discard">
 			<!-- H5下不能录音，输入栏布局改动一下 -->
@@ -133,8 +144,13 @@
 			<!-- #ifdef H5 -->
 			<view class="more" @tap="showMore">
 				<view class="icon add"></view>
+				
 			</view>
+			
 			<!-- #endif -->
+			<view @tap="chooseGift" >
+				<image src="../static/img/gift-icon.png" mode="aspectFit" style="width: 80upx;height: 70upx;margin-top: 10upx;"></image>
+			</view>
 			<view class="textbox">
 				<view class="voice-mode" :class="[isVoice?'':'hidden',recording?'recording':'']" @touchstart="voiceBegin" @touchmove.stop.prevent="voiceIng" @touchend="voiceEnd" @touchcancel="voiceCancel">{{voiceTis}}</view>
 				<view class="text-mode"  :class="isVoice?'hidden':''">
@@ -221,16 +237,34 @@
 				VoiceTimer:null,
 				// 抽屉参数
 				popupLayerClass:'',
+				popupLayerClass2:'',
 				// more参数
 				hideMore:true,
+				hideMore2:true,
 				//表情定义
 				hideEmoji:true,
+				hideEmoji2:true,
 				emojiList:[
 					[{"url":"100.gif",alt:"[微笑]"},{"url":"101.gif",alt:"[伤心]"},{"url":"102.gif",alt:"[美女]"},{"url":"103.gif",alt:"[发呆]"},{"url":"104.gif",alt:"[墨镜]"},{"url":"105.gif",alt:"[哭]"},{"url":"106.gif",alt:"[羞]"},{"url":"107.gif",alt:"[哑]"},{"url":"108.gif",alt:"[睡]"},{"url":"109.gif",alt:"[哭]"},{"url":"110.gif",alt:"[囧]"},{"url":"111.gif",alt:"[怒]"},{"url":"112.gif",alt:"[调皮]"},{"url":"113.gif",alt:"[笑]"},{"url":"114.gif",alt:"[惊讶]"},{"url":"115.gif",alt:"[难过]"},{"url":"116.gif",alt:"[酷]"},{"url":"117.gif",alt:"[汗2]"},{"url":"118.gif",alt:"[抓狂]"},{"url":"119.gif",alt:"[吐]"},{"url":"120.gif",alt:"[笑]"},{"url":"121.gif",alt:"[快乐]"},{"url":"122.gif",alt:"[奇]"},{"url":"123.gif",alt:"[傲]"}],
 					[{"url":"124.gif",alt:"[饿]"},{"url":"125.gif",alt:"[累]"},{"url":"126.gif",alt:"[吓1]"},{"url":"127.gif",alt:"[汗3]"},{"url":"128.gif",alt:"[高兴]"},{"url":"129.gif",alt:"[闲]"},{"url":"130.gif",alt:"[努力]"},{"url":"131.gif",alt:"[骂]"},{"url":"132.gif",alt:"[疑问]"},{"url":"133.gif",alt:"[秘密]"},{"url":"134.gif",alt:"[乱]"},{"url":"135.gif",alt:"[疯]"},{"url":"136.gif",alt:"[哀]"},{"url":"137.gif",alt:"[鬼]"},{"url":"138.gif",alt:"[打击]"},{"url":"139.gif",alt:"[bye]"},{"url":"140.gif",alt:"[汗1]"},{"url":"141.gif",alt:"[抠]"},{"url":"142.gif",alt:"[鼓掌]"},{"url":"143.gif",alt:"[糟糕]"},{"url":"144.gif",alt:"[恶搞]"},{"url":"145.gif",alt:"[什么]"},{"url":"146.gif",alt:"[什么]"},{"url":"147.gif",alt:"[累]"}],
 					[{"url":"148.gif",alt:"[看]"},{"url":"149.gif",alt:"[难过]"},{"url":"150.gif",alt:"[难过]"},{"url":"151.gif",alt:"[坏]"},{"url":"152.gif",alt:"[亲]"},{"url":"153.gif",alt:"[吓2]"},{"url":"154.gif",alt:"[可怜]"},{"url":"155.gif",alt:"[刀]"},{"url":"156.gif",alt:"[水果]"},{"url":"157.gif",alt:"[酒]"},{"url":"158.gif",alt:"[篮球]"},{"url":"159.gif",alt:"[乒乓]"},{"url":"160.gif",alt:"[咖啡]"},{"url":"161.gif",alt:"[美食]"},{"url":"162.gif",alt:"[动物]"},{"url":"163.gif",alt:"[鲜花]"},{"url":"164.gif",alt:"[枯]"},{"url":"165.gif",alt:"[唇]"},{"url":"166.gif",alt:"[爱]"},{"url":"167.gif",alt:"[分手]"},{"url":"168.gif",alt:"[生日]"},{"url":"169.gif",alt:"[电]"},{"url":"170.gif",alt:"[炸弹]"},{"url":"171.gif",alt:"[刀子]"}],
 					[{"url":"172.gif",alt:"[足球]"},{"url":"173.gif",alt:"[瓢虫]"},{"url":"174.gif",alt:"[翔]"},{"url":"175.gif",alt:"[月亮]"},{"url":"176.gif",alt:"[太阳]"},{"url":"177.gif",alt:"[礼物]"},{"url":"178.gif",alt:"[抱抱]"},{"url":"179.gif",alt:"[拇指]"},{"url":"180.gif",alt:"[贬低]"},{"url":"181.gif",alt:"[握手]"},{"url":"182.gif",alt:"[剪刀手]"},{"url":"183.gif",alt:"[抱拳]"},{"url":"184.gif",alt:"[勾引]"},{"url":"185.gif",alt:"[拳头]"},{"url":"186.gif",alt:"[小拇指]"},{"url":"187.gif",alt:"[拇指八]"},{"url":"188.gif",alt:"[食指]"},{"url":"189.gif",alt:"[ok]"},{"url":"190.gif",alt:"[情侣]"},{"url":"191.gif",alt:"[爱心]"},{"url":"192.gif",alt:"[蹦哒]"},{"url":"193.gif",alt:"[颤抖]"},{"url":"194.gif",alt:"[怄气]"},{"url":"195.gif",alt:"[跳舞]"}],
 					[{"url":"196.gif",alt:"[发呆]"},{"url":"197.gif",alt:"[背着]"},{"url":"198.gif",alt:"[伸手]"},{"url":"199.gif",alt:"[耍帅]"},{"url":"200.png",alt:"[微笑]"},{"url":"201.png",alt:"[生病]"},{"url":"202.png",alt:"[哭泣]"},{"url":"203.png",alt:"[吐舌]"},{"url":"204.png",alt:"[迷糊]"},{"url":"205.png",alt:"[瞪眼]"},{"url":"206.png",alt:"[恐怖]"},{"url":"207.png",alt:"[忧愁]"},{"url":"208.png",alt:"[眨眉]"},{"url":"209.png",alt:"[闭眼]"},{"url":"210.png",alt:"[鄙视]"},{"url":"211.png",alt:"[阴暗]"},{"url":"212.png",alt:"[小鬼]"},{"url":"213.png",alt:"[礼物]"},{"url":"214.png",alt:"[拜佛]"},{"url":"215.png",alt:"[力量]"},{"url":"216.png",alt:"[金钱]"},{"url":"217.png",alt:"[蛋糕]"},{"url":"218.png",alt:"[彩带]"},{"url":"219.png",alt:"[礼物]"},]				
+				],
+				giftList:[
+					[{"url":"1.png","des":"礼物1号"},
+					{"url":"2.png","des":"礼物2号"},
+					{"url":"3.png","des":"礼物3号"},
+					{"url":"4.png","des":"礼物4号"},
+					{"url":"5.png","des":"礼物5号"},
+					{"url":"6.png","des":"礼物6号"},
+					{"url":"7.png","des":"礼物7号"},
+					{"url":"8.png","des":"礼物8号"},
+					],[
+						{"url":"9.png","des":"礼物9号"},
+						{"url":"10.png","des":"礼物10号"},
+					{"url":"1.png","des":"礼物1号"},
+					{"url":"2.png","des":"礼物2号"},]
 				],
 				//表情图片图床名称 ，由于我上传的第三方图床名称会有改变，所以有此数据来做对应，您实际应用中应该不需要
 				onlineEmoji:{"100.gif":"AbNQgA.gif","101.gif":"AbN3ut.gif","102.gif":"AbNM3d.gif","103.gif":"AbN8DP.gif","104.gif":"AbNljI.gif","105.gif":"AbNtUS.gif","106.gif":"AbNGHf.gif","107.gif":"AbNYE8.gif","108.gif":"AbNaCQ.gif","109.gif":"AbNN4g.gif","110.gif":"AbN0vn.gif","111.gif":"AbNd3j.gif","112.gif":"AbNsbV.gif","113.gif":"AbNwgs.gif","114.gif":"AbNrD0.gif","115.gif":"AbNDuq.gif","116.gif":"AbNg5F.gif","117.gif":"AbN6ET.gif","118.gif":"AbNcUU.gif","119.gif":"AbNRC4.gif","120.gif":"AbNhvR.gif","121.gif":"AbNf29.gif","122.gif":"AbNW8J.gif","123.gif":"AbNob6.gif","124.gif":"AbN5K1.gif","125.gif":"AbNHUO.gif","126.gif":"AbNIDx.gif","127.gif":"AbN7VK.gif","128.gif":"AbNb5D.gif","129.gif":"AbNX2d.gif","130.gif":"AbNLPe.gif","131.gif":"AbNjxA.gif","132.gif":"AbNO8H.gif","133.gif":"AbNxKI.gif","134.gif":"AbNzrt.gif","135.gif":"AbU9Vf.gif","136.gif":"AbUSqP.gif","137.gif":"AbUCa8.gif","138.gif":"AbUkGQ.gif","139.gif":"AbUFPg.gif","140.gif":"AbUPIS.gif","141.gif":"AbUZMn.gif","142.gif":"AbUExs.gif","143.gif":"AbUA2j.gif","144.gif":"AbUMIU.gif","145.gif":"AbUerq.gif","146.gif":"AbUKaT.gif","147.gif":"AbUmq0.gif","148.gif":"AbUuZV.gif","149.gif":"AbUliF.gif","150.gif":"AbU1G4.gif","151.gif":"AbU8z9.gif","152.gif":"AbU3RJ.gif","153.gif":"AbUYs1.gif","154.gif":"AbUJMR.gif","155.gif":"AbUadK.gif","156.gif":"AbUtqx.gif","157.gif":"AbUUZ6.gif","158.gif":"AbUBJe.gif","159.gif":"AbUdIO.gif","160.gif":"AbU0iD.gif","161.gif":"AbUrzd.gif","162.gif":"AbUDRH.gif","163.gif":"AbUyQA.gif","164.gif":"AbUWo8.gif","165.gif":"AbU6sI.gif","166.gif":"AbU2eP.gif","167.gif":"AbUcLt.gif","168.gif":"AbU4Jg.gif","169.gif":"AbURdf.gif","170.gif":"AbUhFS.gif","171.gif":"AbU5WQ.gif","172.gif":"AbULwV.gif","173.gif":"AbUIzj.gif","174.gif":"AbUTQs.gif","175.gif":"AbU7yn.gif","176.gif":"AbUqe0.gif","177.gif":"AbUHLq.gif","178.gif":"AbUOoT.gif","179.gif":"AbUvYF.gif","180.gif":"AbUjFU.gif","181.gif":"AbaSSJ.gif","182.gif":"AbUxW4.gif","183.gif":"AbaCO1.gif","184.gif":"Abapl9.gif","185.gif":"Aba9yR.gif","186.gif":"AbaFw6.gif","187.gif":"Abaiex.gif","188.gif":"AbakTK.gif","189.gif":"AbaZfe.png","190.gif":"AbaEFO.gif","191.gif":"AbaVYD.gif","192.gif":"AbamSH.gif","193.gif":"AbaKOI.gif","194.gif":"Abanld.gif","195.gif":"Abau6A.gif","196.gif":"AbaQmt.gif","197.gif":"Abal0P.gif","198.gif":"AbatpQ.gif","199.gif":"Aba1Tf.gif","200.png":"Aba8k8.png","201.png":"AbaGtS.png","202.png":"AbaJfg.png","203.png":"AbaNlj.png","204.png":"Abawmq.png","205.png":"AbaU6s.png","206.png":"AbaaXn.png","207.png":"Aba000.png","208.png":"AbarkT.png","209.png":"AbastU.png","210.png":"AbaB7V.png","211.png":"Abafn1.png","212.png":"Abacp4.png","213.png":"AbayhF.png","214.png":"Abag1J.png","215.png":"Aba2c9.png","216.png":"AbaRXR.png","217.png":"Aba476.png","218.png":"Abah0x.png","219.png":"Abdg58.png"},
@@ -411,10 +445,19 @@
 				}else{
 					this.hideDrawer();
 				}
+				if(this.hideMore2){
+					this.hideMore2 = false;
+					this.openDrawer2();
+				}else{
+					this.hideDrawer2();
+				}
 			},
 			// 打开抽屉
 			openDrawer(){
 				this.popupLayerClass = 'showLayer';
+			},
+			openDrawer2(){
+				this.popupLayerClass2 = 'showLayer2';
 			},
 			// 隐藏抽屉
 			hideDrawer(){
@@ -422,6 +465,13 @@
 				setTimeout(()=>{
 					this.hideMore = true;
 					this.hideEmoji = true;
+				},150);
+			},
+			hideDrawer2(){
+				this.popupLayerClass2 = '';
+				setTimeout(()=>{
+					this.hideMore2 = true;
+					this.hideEmoji2 = true;
 				},150);
 			},
 			// 选择图片发送
@@ -438,10 +488,12 @@
 					url:'HM-hand/HM-hand'
 				});
 				this.hideDrawer();
+				this.hideDrawer2();
 			},
 			//选照片 or 拍照
 			getImage(type){
 				this.hideDrawer();
+				this.hideDrawer2();
 				uni.chooseImage({
 					sourceType:[type],
 					sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
@@ -462,6 +514,7 @@
 			},
 			// 选择表情
 			chooseEmoji(){
+				this.hideDrawer2()
 				this.hideMore = true;
 				if(this.hideEmoji){
 					this.hideEmoji = false;
@@ -470,11 +523,33 @@
 					this.hideDrawer();
 				}
 			},
+			//选择礼物
+			chooseGift(){
+				this.hideDrawer()
+				this.hideMore2 = true;
+				if(this.hideEmoji2){
+					this.hideEmoji2 = false;
+					this.openDrawer2();
+				}else{
+					this.hideDrawer2();
+				}
+			},
 			//添加表情
 			addEmoji(em){
 				if (this.textMsg.length<20){
 				this.textMsg+=em.alt;
 				}
+			},
+			//发送礼物
+			addgift(em){
+					console.log('用户消息111');
+					this.hideDrawer();//隐藏抽屉
+					this.hideDrawer2();//隐藏抽屉
+					
+					let content = "赠送了<img src='/static/img/gift/"+em.url+"'> 1个"
+					let msg = {text:content}
+					console.log(msg)
+					this.sendMsg(msg,'text');
 			},
 			
 			//获取焦点，如果不是选表情ing,则关闭抽屉
@@ -482,10 +557,14 @@
 				if(this.popupLayerClass=='showLayer' && this.hideMore == false){
 					this.hideDrawer();
 				}
+				if(this.popupLayerClass2=='showLayer2' && this.hideMore2 == false){
+					this.hideDrawer2();
+				}
 			},
 			// 发送文字消息
 			sendText(){
 				this.hideDrawer();//隐藏抽屉
+				this.hideDrawer2();//隐藏抽屉
 				if(!this.textMsg){
 					return;
 				}
@@ -708,6 +787,7 @@
 			// 切换语音/文字输入
 			switchVoice(){
 				this.hideDrawer();
+				this.hideDrawer2();
 				this.isVoice = this.isVoice?false:true;
 			},
 			discard(){
