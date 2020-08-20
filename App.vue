@@ -7,7 +7,6 @@
 		mapState,
 		mapMutations
 	} from 'vuex'
-
 	export default {
 		onLaunch: function() {
 			let uniIdToken = uni.getStorageSync('uniIdToken')

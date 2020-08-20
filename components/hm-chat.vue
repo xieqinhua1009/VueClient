@@ -103,6 +103,7 @@
 				</view>
 			</scroll-view>
 		</view>
+		
 		<!-- 抽屉栏 -->
 		<view class="popup-layer" :class="popupLayerClass" @touchmove.stop.prevent="discard">
 			<!-- 表情 --> 
@@ -132,6 +133,56 @@
 					</view>
 				</swiper-item>
 			</swiper>
+		</view>
+		<view class="menubtn" @tap="showmenu = true">
+			<button type="primary">菜单</button>
+		</view>
+		<!-- 菜单栏弹窗 -->
+		<view>
+			<u-popup v-model="showmenu" mode="bottom" border-radius="20" length="13%">
+				<view class="cate-section">
+					<view class="cate-item">
+						<image src="../static/img/menu/tabs-icon.png" @tap="menuClick(1)"></image>
+						<text>房间TAB</text>
+					</view>
+					<view class="cate-item">
+						<image src="../static/img/menu/contastcourse.png" @tap="menuClick(2)"></image>
+						<text>课程安排</text>
+					</view>
+					<view class="cate-item">
+						<image src="../static/img/menu/picroll.png" @tap="menuClick(3)"></image>
+						<text>嘉宾介绍</text>
+					</view>
+				</view>
+			</u-popup>
+		</view>
+		<!-- 菜单栏里的按钮点击再弹出内容栏 -->
+		<view>
+			<u-popup v-model="showmenucontent" mode="center" border-radius="20" height="32%" width="90%">
+				<view v-if="showmenucontentindex===1" style="margin-top: 10upx;">
+					<view style="background-color: #FF9900;font-weight: 100;">免责声明:</view>
+					<text>
+						本直播室所有内容，包括文字、图像、音频、视频仅供学习风险，不作为买卖、投资、交易等参考依据；
+						访问者可将本网站提供的内容货服务用于个人学习或欣赏，以及其他非商业性或非盈利性用途；
+						本直播室所有嘉宾及发言者观点仅代表其个人观点，不代表本网站立场；
+						没有本网站的书面授权，不得因任何目的，以任何方式如电子、转载或其他方式，包括影印和记录，复制等，谢谢合作
+					</text>
+				</view>
+				<view v-if="showmenucontentindex===2">
+					<image src="../static/img/Logo.jpg" style="width: 700upx;height: 600upx;"></image>
+				</view>
+				<view v-if="showmenucontentindex===3">
+					<text>
+						周一：大佬 8:00-12:00 ，领导 14:00-18:00
+						周二：大佬 8:00-12:00 ，领导 14:00-18:00
+						周三：大佬 8:00-12:00 ，领导 14:00-18:00
+						周四：大佬 8:00-12:00 ，领导 14:00-18:00
+						周五：大佬 8:00-12:00 ，领导 14:00-18:00
+						周六：大佬 8:00-12:00 ，领导 14:00-18:00
+						周日：放假
+					</text>
+				</view>
+			</u-popup>
 		</view>
 		<!-- 底部输入栏 -->
 		<view class="input-box" :class="popupLayerClass" @touchmove.stop.prevent="discard">
@@ -199,6 +250,7 @@
 			</view>
 			
 		</view>
+		
 	</view>
 </template>
 <script>
@@ -216,7 +268,9 @@
 				msgList:[],
 				msgImgList:[],
 				myuid:0,
-				
+				showmenu:false,
+				showmenucontent:false,
+				showmenucontentindex:1,
 				//录音相关参数
 				// #ifndef H5
 				//H5不能录音
@@ -790,6 +844,11 @@
 				this.hideDrawer2();
 				this.isVoice = this.isVoice?false:true;
 			},
+			menuClick(index){
+				this.showmenu=false;
+				this.showmenucontentindex=index;
+				this.showmenucontent=true;
+			},
 			discard(){
 				return;
 			}
@@ -798,4 +857,32 @@
 </script>
 <style lang="scss">
 	@import "@/static/HM-chat/css/style.scss"; 
+	.menubtn{
+		width: 18%; 
+		position: absolute; 
+		margin-left: 600upx;
+		margin-top: 900upx;
+	}
+	.cate-section {
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+		flex-wrap:wrap;
+		padding: 30upx 22upx; 
+		//background: #fff;
+		.cate-item {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+		/* 原图标颜色太深,不想改图了,所以加了透明度 */
+		image {
+			width: 88upx;
+			height: 88upx;
+			margin-bottom: 14upx;
+			//border-radius: 50%;
+			//opacity: .7;
+			//box-shadow: 4upx 4upx 20upx rgba(250, 67, 106, 0.3);
+		}
+	}
 </style>
