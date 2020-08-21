@@ -72,15 +72,13 @@
 				});
 			},
 			BackWin(){
-				uni.navigateTo({
-					url:'../main/main',
-					animationType: 'pop-in',
-					    animationDuration: 500
+				uni.navigateBack({
 				})
+				
 			},
 			bindLogout() {
 				const loginType = uni.getStorageSync('login_type')
-				if (loginType === 'local') {
+				if (loginType === 'local' || true) {
 					this.logout();
 					if (this.forcedLogin) {
 						uni.reLaunch({

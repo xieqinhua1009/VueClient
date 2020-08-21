@@ -129,7 +129,7 @@
 			<swiper class="gift-swiper" :class="{hidden:hideEmoji2}" indicator-dots="true" duration="150">
 				<swiper-item v-for="(page,pid) in giftList" :key="pid">
 					<view v-for="(em,eid) in page" :key="eid" @tap="addgift(em)">
-						<image mode="widthFix" :src="'/static/img/gift/'+em.url"></image>
+						<image mode="widthFix" :src="gifturl+em.url"></image>
 					</view>
 				</swiper-item>
 			</swiper>
@@ -305,6 +305,7 @@
 					[{"url":"172.gif",alt:"[足球]"},{"url":"173.gif",alt:"[瓢虫]"},{"url":"174.gif",alt:"[翔]"},{"url":"175.gif",alt:"[月亮]"},{"url":"176.gif",alt:"[太阳]"},{"url":"177.gif",alt:"[礼物]"},{"url":"178.gif",alt:"[抱抱]"},{"url":"179.gif",alt:"[拇指]"},{"url":"180.gif",alt:"[贬低]"},{"url":"181.gif",alt:"[握手]"},{"url":"182.gif",alt:"[剪刀手]"},{"url":"183.gif",alt:"[抱拳]"},{"url":"184.gif",alt:"[勾引]"},{"url":"185.gif",alt:"[拳头]"},{"url":"186.gif",alt:"[小拇指]"},{"url":"187.gif",alt:"[拇指八]"},{"url":"188.gif",alt:"[食指]"},{"url":"189.gif",alt:"[ok]"},{"url":"190.gif",alt:"[情侣]"},{"url":"191.gif",alt:"[爱心]"},{"url":"192.gif",alt:"[蹦哒]"},{"url":"193.gif",alt:"[颤抖]"},{"url":"194.gif",alt:"[怄气]"},{"url":"195.gif",alt:"[跳舞]"}],
 					[{"url":"196.gif",alt:"[发呆]"},{"url":"197.gif",alt:"[背着]"},{"url":"198.gif",alt:"[伸手]"},{"url":"199.gif",alt:"[耍帅]"},{"url":"200.png",alt:"[微笑]"},{"url":"201.png",alt:"[生病]"},{"url":"202.png",alt:"[哭泣]"},{"url":"203.png",alt:"[吐舌]"},{"url":"204.png",alt:"[迷糊]"},{"url":"205.png",alt:"[瞪眼]"},{"url":"206.png",alt:"[恐怖]"},{"url":"207.png",alt:"[忧愁]"},{"url":"208.png",alt:"[眨眉]"},{"url":"209.png",alt:"[闭眼]"},{"url":"210.png",alt:"[鄙视]"},{"url":"211.png",alt:"[阴暗]"},{"url":"212.png",alt:"[小鬼]"},{"url":"213.png",alt:"[礼物]"},{"url":"214.png",alt:"[拜佛]"},{"url":"215.png",alt:"[力量]"},{"url":"216.png",alt:"[金钱]"},{"url":"217.png",alt:"[蛋糕]"},{"url":"218.png",alt:"[彩带]"},{"url":"219.png",alt:"[礼物]"},]				
 				],
+				gifturl:"http://47.105.162.68:18180/download/img/gift/",
 				giftList:[
 					[{"url":"1.png","des":"礼物1号"},
 					{"url":"2.png","des":"礼物2号"},
@@ -600,7 +601,7 @@
 					this.hideDrawer();//隐藏抽屉
 					this.hideDrawer2();//隐藏抽屉
 					
-					let content = "赠送了<img src='/static/img/gift/"+em.url+"'> 1个"
+					let content = "赠送了<img src='"+this.gifturl+em.url+"'/> 1个"
 					let msg = {text:content}
 					console.log(msg)
 					this.sendMsg(msg,'text');
@@ -858,10 +859,10 @@
 <style lang="scss">
 	@import "@/static/HM-chat/css/style.scss"; 
 	.menubtn{
+		position: fixed;
 		width: 18%; 
-		position: absolute; 
-		margin-left: 600upx;
-		margin-top: 900upx;
+		bottom: 120upx;
+		right: 12upx;
 	}
 	.cate-section {
 		display: flex;
