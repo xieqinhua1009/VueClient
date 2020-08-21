@@ -11,12 +11,16 @@
 			 	 class="login-type-btn">{{item}}</view>
 				 <u-image src="../../static/img/face.jpg" style="width: 40px;height: 40px; border-radius: 50%;left: 10px;" @tap="OpenMyData"></u-image>
 			 </view>
-			 
 			 <hmchat :datas="chatlist" ref="hmchat" v-if="chattype===0"></hmchat>
 			 <privatechat :datas="privatechatlist" ref="privatechat" v-else-if ="chattype===1"></privatechat>
 			 <users ref="users" v-else-if ="chattype===2"></users>
 			 <hotrank ref="hotrank" v-else-if ="chattype===3"></hotrank>
 			 <rank ref="rank" v-else-if ="chattype===4"></rank>
+			 <canvas style="width: 100%;">
+				 <u-notice-bar type="warning" :list="noticeList" :is-circular="true" :duration="5000" close-icon="true" @end="niticeEnd"></u-notice-bar>
+			 </canvas>
+			 
+			 
 		</view>
 		<view v-if="!hasLogin">
 			<!-- <live-player
@@ -77,7 +81,14 @@
 					{type:"system",msg:{id:0,type:"text",content:{text:"请注意私聊谨防受骗"}}},
 					{type:"user",msg:{id:1,type:"text",time:"12:56",userinfo:{uid:0,username:"大黑哥",face:"/static/img/face.jpg"},content:{text:"想要发财吗？冲100万，送1个亿~快来吧"}}},
 					{type:"user",msg:{id:6,type:"text",time:"12:59",userinfo:{uid:1,username:"李老师109",face:"/static/img/im/face/face_2.jpg"},content:{text:"好的，马上打钱~"}}},
-				]
+				],
+				//公告滚动数组
+				noticeList:[
+					'寒雨连江夜入吴',
+					'平明送客楚山孤',
+					'洛阳亲友如相问',
+					'一片冰心在玉壶'
+					]
 			}
 		},
 		onLoad() {
@@ -141,6 +152,10 @@
 					animationType: 'pop-in',
 					    animationDuration: 500
 				})
+			},
+			//公告滚动完毕 is-circular="true"时无法生效··辣鸡
+			niticeEnd(){
+				console.log("123123")
 			},
 			guideToLogin() {
 				uni.showModal({
