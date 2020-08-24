@@ -160,8 +160,9 @@
 		<view>
 			<u-popup v-model="showmenucontent" mode="center" border-radius="20" height="32%" width="90%">
 				<view v-if="showmenucontentindex===1" style="margin-top: 10upx;">
-					<view style="background-color: #FF9900;font-weight: 100;">免责声明:</view>
-					<text>
+					<view style="background-color: #0FAEFF;font-weight: 100;padding-left: 10px;color: white;">免责声明:</view>
+					<text style="padding: 30upx;color: #007AFF;">
+						
 						本直播室所有内容，包括文字、图像、音频、视频仅供学习风险，不作为买卖、投资、交易等参考依据；
 						访问者可将本网站提供的内容货服务用于个人学习或欣赏，以及其他非商业性或非盈利性用途；
 						本直播室所有嘉宾及发言者观点仅代表其个人观点，不代表本网站立场；
@@ -170,17 +171,14 @@
 				</view>
 				<view v-if="showmenucontentindex===2">
 					<image src="../static/img/Logo.jpg" style="width: 700upx;height: 600upx;"></image>
-				</view>
-				<view v-if="showmenucontentindex===3">
-					<text>
-						周一：大佬 8:00-12:00 ，领导 14:00-18:00
-						周二：大佬 8:00-12:00 ，领导 14:00-18:00
-						周三：大佬 8:00-12:00 ，领导 14:00-18:00
-						周四：大佬 8:00-12:00 ，领导 14:00-18:00
-						周五：大佬 8:00-12:00 ，领导 14:00-18:00
-						周六：大佬 8:00-12:00 ，领导 14:00-18:00
-						周日：放假
-					</text>
+				</view>   
+				<view v-if="showmenucontentindex===3" v-for="item in kcTimeList">
+					<h5 style="line-height: 200%;margin-left: 10upx;font-size: 0.94em;">
+						<li>
+							{{item}}</br>
+							<u-line></u-line>
+						</li>
+					</h5>
 				</view>
 			</u-popup>
 		</view>
@@ -298,6 +296,15 @@
 				//表情定义
 				hideEmoji:true,
 				hideEmoji2:true,
+				kcTimeList:[
+					"周一：大佬 8:00-12:00 ，领导 14:00-18:00",
+					"周二：大佬 8:00-12:00 ，领导 14:00-18:00",
+					"周三：大佬 8:00-12:00 ，领导 14:00-18:00",
+					"周四：大佬 8:00-12:00 ，领导 14:00-18:00",
+					"周五：大佬 8:00-12:00 ，领导 14:00-18:00",
+					"周六：大佬 8:00-12:00 ，领导 14:00-18:00",
+					"周日：放假"
+				],
 				emojiList:[
 					[{"url":"100.gif",alt:"[微笑]"},{"url":"101.gif",alt:"[伤心]"},{"url":"102.gif",alt:"[美女]"},{"url":"103.gif",alt:"[发呆]"},{"url":"104.gif",alt:"[墨镜]"},{"url":"105.gif",alt:"[哭]"},{"url":"106.gif",alt:"[羞]"},{"url":"107.gif",alt:"[哑]"},{"url":"108.gif",alt:"[睡]"},{"url":"109.gif",alt:"[哭]"},{"url":"110.gif",alt:"[囧]"},{"url":"111.gif",alt:"[怒]"},{"url":"112.gif",alt:"[调皮]"},{"url":"113.gif",alt:"[笑]"},{"url":"114.gif",alt:"[惊讶]"},{"url":"115.gif",alt:"[难过]"},{"url":"116.gif",alt:"[酷]"},{"url":"117.gif",alt:"[汗2]"},{"url":"118.gif",alt:"[抓狂]"},{"url":"119.gif",alt:"[吐]"},{"url":"120.gif",alt:"[笑]"},{"url":"121.gif",alt:"[快乐]"},{"url":"122.gif",alt:"[奇]"},{"url":"123.gif",alt:"[傲]"}],
 					[{"url":"124.gif",alt:"[饿]"},{"url":"125.gif",alt:"[累]"},{"url":"126.gif",alt:"[吓1]"},{"url":"127.gif",alt:"[汗3]"},{"url":"128.gif",alt:"[高兴]"},{"url":"129.gif",alt:"[闲]"},{"url":"130.gif",alt:"[努力]"},{"url":"131.gif",alt:"[骂]"},{"url":"132.gif",alt:"[疑问]"},{"url":"133.gif",alt:"[秘密]"},{"url":"134.gif",alt:"[乱]"},{"url":"135.gif",alt:"[疯]"},{"url":"136.gif",alt:"[哀]"},{"url":"137.gif",alt:"[鬼]"},{"url":"138.gif",alt:"[打击]"},{"url":"139.gif",alt:"[bye]"},{"url":"140.gif",alt:"[汗1]"},{"url":"141.gif",alt:"[抠]"},{"url":"142.gif",alt:"[鼓掌]"},{"url":"143.gif",alt:"[糟糕]"},{"url":"144.gif",alt:"[恶搞]"},{"url":"145.gif",alt:"[什么]"},{"url":"146.gif",alt:"[什么]"},{"url":"147.gif",alt:"[累]"}],
