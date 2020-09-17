@@ -7,11 +7,39 @@
 		mapState,
 		mapMutations
 	} from 'vuex'
+	import md5 from "./store/md5.js"
+	import goeasy from "./store/goeasy.js"
+	import crypto from "./store/crypto-js.min.js"
+	import chatchannel from "./store/chatchannel.js"
 	export default {
+		globalData:{
+			pageIndex:{
+				login:"login",
+				base_room_config:"web/base_room_config",
+				rank:"rank/rankInfo",
+				getCurrentUserInfo:"web/get_currentuser",
+				teacher_rank:"web/teacher_rank",//人气榜
+				sendLike:"web/sendLike",//点赞
+				online:"online/onlineList",
+				class_schedule:"web/class_schedule",//课程安排
+			},
+			basedata:null,//登陆后的主动获取的web base info数据
+			userName:null,
+			userInfo:null,
+		},
 		onLaunch: function() {
-			let uniIdToken = uni.getStorageSync('uniIdToken')
-			if (uniIdToken) {
-				this.login(uni.getStorageSync('username'))
+			let obj = {}
+			obj.goEasyAppKey = "123"
+			obj.goEasyUrl = "goEasy.goEasyUrl;"
+			obj.encryptKey = "goEasy.encryptKey;"
+			obj.chatChannel = "goEasy.chatChannel;"
+			let user = {}
+			user.userId = 1000
+			user.username = "admin"
+			chatchannel(1000,user,obj)
+			let authToken = uni.getStorageSync('authToken')
+			console.log("token:",authToken)
+			if (authToken && authToken!="") {
 			}
 			console.log('App Launch');
 		},
@@ -23,6 +51,21 @@
 		},
 		methods: {
 			...mapMutations(['login']),
+			toMain(){
+				console.log("当前页面：",uni.getCurrentPages().route)
+				this.globalData.userName = uni.getStorageSync('userName')
+				/**
+				 * 强制登录时使用reLaunch方式跳转过来
+				 * 返回首页也使用reLaunch方式
+				 */
+				if (this.forcedLogin) {
+					uni.reLaunch({
+						url: '../main/main',
+					});
+				} else {
+					uni.navigateBack();
+				}
+			},
 		}
 	}
 </script>

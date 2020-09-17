@@ -1,9 +1,9 @@
 <template>
 	<view style="margin-top: 2px;">
-		<view style="background-color: #0FAEFF88;height: 24px;padding: 4px 0;">
-			<text style="color: #FF9900;font-weight: bold;padding-left: 12px;">名次</text>
-			<text style="color: #FF9900;font-weight: bold;padding-left: 50px;">昵称</text>
-			<text style="color: #FF9900;font-weight: bold;padding-left:125px;">收礼总积分</text>
+		<view style="background-color: #0FAEFF88;height: 28px;padding: 5px 1;">
+			<text style="color: #303133;padding-left: 12px;">名次</text>
+			<text style="color: #303133;padding-left: 60px;">昵称</text>
+			<text style="color: #303133;padding-left:130px;">总积分</text>
 		</view>
 		<view class="uni-common-mt">
 			<scroll-view :scroll-y="true" scroll-with-animation="true" style="width: 100%; height: 1120rpx;">
@@ -18,7 +18,7 @@
 							{{index+1}}
 						</view>
 					</view>
-					<view style="margin-left: 70px;margin-top: -30px;">{{item}}</view>
+					<view style="margin-left: 70px;margin-top: -30px; text-align: center; width: 200upx;">{{item}}</view>
 					<view style="margin-left: 260px;margin-top: -22px;color: #007AFF;">积分:{{JFList[index]}}</view>
 				</view>
 			</scroll-view>
@@ -37,11 +37,9 @@
 					scrollTop: 0
 				},
 				totalUser: 99999,
-				userList: ['教师11111', '教师22222', '教师55555', '教师66666', '教师88888', '教师88888', '教师88888', '教师88888',
-					'教师88888', '教师88888', '教师88888'
+				userList: [
 				],
-				JFList: ['123', '345', '999', '666', '444', '338', '88888', '123888',
-					'288', '2354', '123488'
+				JFList: [
 				],
 				myname: '大佬',
 			}
@@ -51,7 +49,30 @@
 		},
 		methods: {
 			init() {
-
+				let data2 = JSON.stringify({rankType: 1})
+				console.log("获取排行榜数据")
+				this.$myRequest({
+				    url: getApp().globalData.pageIndex.rank,
+				    data: data2,
+					method:"POST",
+				}).then(res=>{
+					console.log(res)
+					if(res.data.code == '0')
+					{
+						this.$data.JFList =[]
+						this.$data.userList = []
+						for (let i = 0; i < res.data.data.lists.length; i++) {
+							let item = res.data.data.lists[i]
+							this.$data.JFList.push(item['score'])
+							this.$data.userList.push(item['name'])
+						}
+					}else{
+						uni.showToast({
+							title: "更新数据失败"
+						});
+					}
+				}).catch(rej=>{
+				})
 			},
 			upper: function(e) {
 				console.log(e)

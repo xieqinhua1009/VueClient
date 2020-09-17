@@ -1,8 +1,7 @@
 <template>
 	<view class="content">
 		<view v-if="hasLogin" class="hello">
-			<video src="rtmp://202.69.69.180:443/webcast/bshdlive-pc" style="width: 100%;height: 400rpx;align-self: center;" :autoplay="true"
-			 controls></video>
+			<video src="rtmp://202.69.69.180:443/webcast/bshdlive-pc" style="width: 100%;height: 400rpx;align-self: center;" :autoplay="true"></video>
 			 <view class="title" style="position: absolute;top: -2%;color: #FFFFFF;font-weight: bold;">
 			 	{{currentTC}}
 			 </view>
@@ -16,7 +15,7 @@
 			 <users ref="users" v-else-if ="chattype===2"></users>
 			 <hotrank ref="hotrank" v-else-if ="chattype===3"></hotrank>
 			 <rank ref="rank" v-else-if ="chattype===4"></rank>
-			 <canvas style="width: 100%;">
+			 <canvas style="width: 100%;" v-if="chattype===0||chattype===1">
 				 <u-notice-bar type="warning" :list="noticeList" :is-circular="true" :duration="5000" close-icon="true" @end="niticeEnd"></u-notice-bar>
 			 </canvas>
 			 
@@ -30,9 +29,8 @@
 			  @error="error"
 			  style="width: 300px; height: 225px;"
 			/> -->
-			<image src="../../static/img/Logo.jpg" style="width: 100%;height: 400px;"></image>
+			<image src="../../static/img/Logo.jpg" style="width: 100%;"></image>
 			<view class="title">
-				您好，请您先登陆后观看。
 			</view>
 		</view>
 	</view>
@@ -84,55 +82,14 @@
 				],
 				//公告滚动数组
 				noticeList:[
-					'寒雨连江夜入吴',
-					'平明送客楚山孤',
-					'洛阳亲友如相问',
-					'一片冰心在玉壶'
 					]
 			}
 		},
+		onShow() {
+			this.GetMainInfo()
+		},
 		onLoad() {
-			const loginType = uni.getStorageSync('login_type')
-			if (loginType === 'local') {
-				this.login(uni.getStorageSync('username'))
-				return
-			}
-			let uniIdToken = uni.getStorageSync('uniIdToken')
-			if (uniIdToken) {
-				this.username = uni.getStorageSync('username')
-				this.login(this.username)
-				uniCloud.callFunction({
-					name: 'user-center',
-					data: {
-						action: 'checkToken',
-					},
-					success: (e) => {
-
-						console.log('checkToken success', e);
-
-						if (e.result.code > 0) {
-							//token过期或token不合法，重新登录
-							if (this.forcedLogin) {
-								uni.reLaunch({
-									url: '../login/login'
-								});
-							} else {
-								uni.navigateTo({
-									url: '../login/login'
-								});
-							}
-						}
-					},
-					fail(e) {
-						uni.showModal({
-							content: JSON.stringify(e),
-							showCancel: false
-						})
-					}
-				})
-			} else {
-				this.guideToLogin()
-			}
+			
 		},
 		methods: {
 			...mapMutations(['login']),
@@ -141,6 +98,85 @@
 			},
 			error(e) {
 				console.error('live-player error:', e.detail.errMsg)
+			},
+			GetMainInfo(){
+				uni.showLoading({
+					title:"正在加载中"
+				})
+				let authToken = uni.getStorageSync('authToken')
+				console.log("token:",authToken)
+				if (authToken && authToken!="") {
+					//获取主界面信息
+					this.$myRequest({
+						url: getApp().globalData.pageIndex.base_room_config
+					}).then(res=>{
+						console.log("获取主界面信息",res);
+						if(res.data.code == '0')
+						{
+							uni.hideLoading()
+							getApp().globalData.basedata = res.data.data.list //.list  {chatBottomMsg 免责声明  noticeMsg公告}
+							
+							this.$data.noticeList = [res.data.data.list.noticeMsg]
+							this.login(true,uni.getStorageSync('userName'))
+							this.GetUserInfo()
+						}else{
+							uni.hideLoading()
+							uni.showToast({
+								icon: 'none',
+								title: "已过期，请重新登陆"
+							});
+							this.guideToLogin()
+						}
+					}).catch(rej=>{
+						uni.hideLoading()
+						this.guideToLogin()
+					})
+				}else{
+					uni.hideLoading()
+					uni.showToast({
+						icon: 'none',
+						title: "已过期，请重新登陆"
+					});
+					this.guideToLogin()
+				}
+			},
+			GetUserInfo(){
+				uni.showLoading({
+					title:"正在加载中"
+				})
+				let authToken = uni.getStorageSync('authToken')
+				if (authToken && authToken!="") {
+					//玩家信息
+					this.$myRequest({
+						url: getApp().globalData.pageIndex.getCurrentUserInfo
+					}).then(res=>{
+						console.log("玩家信息",res);
+						if(res.data.code == '0')
+						{
+							uni.hideLoading()
+							getApp().globalData.userInfo = res.data.data.list
+							getApp().globalData.userName = res.data.data.list.userName
+						}else{
+							uni.hideLoading()
+							uni.showToast({
+								icon: 'none',
+								title: "已过期，请重新登陆"
+							});
+							uni.setStorageSync('authToken', "")
+							this.guideToLogin()
+						}
+					}).catch(rej=>{
+						uni.hideLoading()
+						this.guideToLogin()
+					})
+				}else{
+					uni.hideLoading()
+					uni.showToast({
+						icon: 'none',
+						title: "已过期，请重新登陆"
+					});
+					this.guideToLogin()
+				}
 			},
 			//选择聊天分类
 			chatTypeClick(index){
@@ -158,29 +194,8 @@
 				console.log("123123")
 			},
 			guideToLogin() {
-				uni.showModal({
-					title: '未登录',
-					content: '您未登录，需要登录后才能继续',
-					/**
-					 * 如果需要强制登录，不显示取消按钮
-					 */
-					showCancel: !this.forcedLogin,
-					success: (res) => {
-						if (res.confirm) {
-							/**
-							 * 如果需要强制登录，使用reLaunch方式
-							 */
-							if (this.forcedLogin) {
-								uni.reLaunch({
-									url: '../login/login'
-								});
-							} else {
-								uni.navigateTo({
-									url: '../login/login'
-								});
-							}
-						}
-					}
+				uni.reLaunch({
+					url: '../login/login'
 				});
 			}
 		}

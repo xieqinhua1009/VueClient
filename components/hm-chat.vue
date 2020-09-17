@@ -58,10 +58,7 @@
 								</view>
 								
 							</view>
-							<!-- 右-头像 -->
-							<view class="right">
-								<image :src="row.msg.userinfo.face"></image>
-							</view>
+							
 						</view>
 						<!-- 别人发出的消息 -->
 						<view class="other" v-if="row.msg.userinfo.uid!=myuid">
@@ -143,37 +140,33 @@
 				<view class="cate-section">
 					<view class="cate-item">
 						<image src="../static/img/menu/tabs-icon.png" @tap="menuClick(1)"></image>
-						<text>房间TAB</text>
+						<text>声明</text>
 					</view>
 					<view class="cate-item">
 						<image src="../static/img/menu/contastcourse.png" @tap="menuClick(2)"></image>
-						<text>课程安排</text>
+						<text>嘉宾介绍</text>
 					</view>
 					<view class="cate-item">
 						<image src="../static/img/menu/picroll.png" @tap="menuClick(3)"></image>
-						<text>嘉宾介绍</text>
+						<text>课程安排</text>
 					</view>
 				</view>
 			</u-popup>
 		</view>
 		<!-- 菜单栏里的按钮点击再弹出内容栏 -->
 		<view>
-			<u-popup v-model="showmenucontent" mode="center" border-radius="20" height="32%" width="90%">
+			<u-popup v-model="showmenucontent" mode="center" border-radius="20" height="42%" width="90%">
 				<view v-if="showmenucontentindex===1" style="margin-top: 10upx;">
-					<view style="background-color: #0FAEFF;font-weight: 100;padding-left: 10px;color: white;">免责声明:</view>
-					<text style="padding: 30upx;color: #007AFF;">
-						
-						本直播室所有内容，包括文字、图像、音频、视频仅供学习风险，不作为买卖、投资、交易等参考依据；
-						访问者可将本网站提供的内容货服务用于个人学习或欣赏，以及其他非商业性或非盈利性用途；
-						本直播室所有嘉宾及发言者观点仅代表其个人观点，不代表本网站立场；
-						没有本网站的书面授权，不得因任何目的，以任何方式如电子、转载或其他方式，包括影印和记录，复制等，谢谢合作
+					<view style="top: 10rpx; background-color: #0FAEFF;font-weight: 100;padding-left: 10px;color: white;">免责声明:</view>
+					<text style="padding: 30upx;color: #007AFF;" v-text="mianzetext">
 					</text>
 				</view>
 				<view v-if="showmenucontentindex===2">
-					<image src="../static/img/Logo.jpg" style="width: 700upx;height: 600upx;"></image>
+					<image src="../static/img/jiab/temp_03.jpg" style="width: 700upx;"></image>
+					<image src="../static/img/jiab/temp_04.jpg" style="width: 700upx;"></image>
 				</view>   
 				<view v-if="showmenucontentindex===3" v-for="item in kcTimeList">
-					<h5 style="line-height: 200%;margin-left: 10upx;font-size: 0.94em;">
+					<h5 style="line-height: 200%;margin-left: 10upx;font-size: 0.94em;top: 80rpx;">
 						<li>
 							{{item}}</br>
 							<u-line></u-line>
@@ -305,6 +298,7 @@
 					"周六：大佬 8:00-12:00 ，领导 14:00-18:00",
 					"周日：放假"
 				],
+				mianzetext:getApp().globalData.basedata.chatBottomMsg,
 				emojiList:[
 					[{"url":"100.gif",alt:"[微笑]"},{"url":"101.gif",alt:"[伤心]"},{"url":"102.gif",alt:"[美女]"},{"url":"103.gif",alt:"[发呆]"},{"url":"104.gif",alt:"[墨镜]"},{"url":"105.gif",alt:"[哭]"},{"url":"106.gif",alt:"[羞]"},{"url":"107.gif",alt:"[哑]"},{"url":"108.gif",alt:"[睡]"},{"url":"109.gif",alt:"[哭]"},{"url":"110.gif",alt:"[囧]"},{"url":"111.gif",alt:"[怒]"},{"url":"112.gif",alt:"[调皮]"},{"url":"113.gif",alt:"[笑]"},{"url":"114.gif",alt:"[惊讶]"},{"url":"115.gif",alt:"[难过]"},{"url":"116.gif",alt:"[酷]"},{"url":"117.gif",alt:"[汗2]"},{"url":"118.gif",alt:"[抓狂]"},{"url":"119.gif",alt:"[吐]"},{"url":"120.gif",alt:"[笑]"},{"url":"121.gif",alt:"[快乐]"},{"url":"122.gif",alt:"[奇]"},{"url":"123.gif",alt:"[傲]"}],
 					[{"url":"124.gif",alt:"[饿]"},{"url":"125.gif",alt:"[累]"},{"url":"126.gif",alt:"[吓1]"},{"url":"127.gif",alt:"[汗3]"},{"url":"128.gif",alt:"[高兴]"},{"url":"129.gif",alt:"[闲]"},{"url":"130.gif",alt:"[努力]"},{"url":"131.gif",alt:"[骂]"},{"url":"132.gif",alt:"[疑问]"},{"url":"133.gif",alt:"[秘密]"},{"url":"134.gif",alt:"[乱]"},{"url":"135.gif",alt:"[疯]"},{"url":"136.gif",alt:"[哀]"},{"url":"137.gif",alt:"[鬼]"},{"url":"138.gif",alt:"[打击]"},{"url":"139.gif",alt:"[bye]"},{"url":"140.gif",alt:"[汗1]"},{"url":"141.gif",alt:"[抠]"},{"url":"142.gif",alt:"[鼓掌]"},{"url":"143.gif",alt:"[糟糕]"},{"url":"144.gif",alt:"[恶搞]"},{"url":"145.gif",alt:"[什么]"},{"url":"146.gif",alt:"[什么]"},{"url":"147.gif",alt:"[累]"}],
@@ -853,9 +847,51 @@
 				this.isVoice = this.isVoice?false:true;
 			},
 			menuClick(index){
-				this.showmenu=false;
-				this.showmenucontentindex=index;
-				this.showmenucontent=true;
+				if(index==3){
+					console.log("获取课程安排")
+					this.$myRequest({
+					    url: getApp().globalData.pageIndex.class_schedule,
+						method:"GET",
+					}).then(res=>{
+						console.log(res)
+						if(res.data.code == '0')
+						{
+							this.$data.kcTimeList =[
+								"周一：",
+								"周二：",
+								"周三：",
+								"周四：",
+								"周五：",
+								"周六：",
+								"周日："
+							]
+							for (let i = 0; i < res.data.data.data.length; i++) {
+								let item = res.data.data.data[i]
+								let obj = JSON.parse(item.mainValue)
+								for(let j=0;j<7;j++)
+								{
+									let tname = obj["day"+(j+1).toString()+"Teacher"]
+									this.$data.kcTimeList[j]+=item.mainKey+"("+tname+")  "
+								}
+							}
+							this.showmenu=false;
+							this.showmenucontentindex=index;
+							this.showmenucontent=true;
+						}else{
+							uni.reLaunch({
+								url: '../login/login'
+							});
+						}
+					}).catch(rej=>{
+						uni.reLaunch({
+							url: '../login/login'
+						});
+					})
+				}else{
+					this.showmenu=false;
+					this.showmenucontentindex=index;
+					this.showmenucontent=true;
+				}
 			},
 			discard(){
 				return;

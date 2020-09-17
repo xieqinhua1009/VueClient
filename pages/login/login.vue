@@ -32,7 +32,7 @@
 			<checkbox checked="true" v-model="rememberuser" style="margin-top: 15px;">保持15天自动登陆</checkbox>
 		</view>
 		<view class="btn-row">
-			<button type="primary" class="primary" @tap="bindLogin">登录</button>
+			<button type="primary" class="primary" @tap="loginByPwd">登录</button>
 		</view>
 		<view class="action-row">
 			<!-- <navigator url="../reg/reg">注册账号</navigator> -->
@@ -57,6 +57,7 @@
 		mapMutations
 	} from 'vuex'
 	import mInput from '../../components/m-input.vue'
+	import md5 from "../../store/md5.js"
 
 	export default {
 		components: {
@@ -167,7 +168,6 @@
 			loginByPwd() {
 				/**
 				 * 客户端对账号信息进行一些必要的校验。
-				 * 实际开发中，根据业务需要进行处理，这里仅做示例。
 				 */
 				if (this.username.length < 3) {
 					uni.showToast({
@@ -187,42 +187,49 @@
 					username: this.username,
 					password: this.password
 				};
-				let _self = this;
-				uni.setStorageSync('uniIdToken', 'asdasd123testtoken')
-				uni.setStorageSync('username', _self.username)
-				uni.setStorageSync('login_type', 'online')
-				_self.toMain(_self.username);
-				// uniCloud.callFunction({
-				// 	name: 'user-center',
-				// 	data: {
-				// 		action: 'login',
-				// 		params: data
-				// 	},
-				// 	success: (e) => {
-
-				// 		console.log('login success', e);
-
-				// 		if (e.result.code == 0) {
-				// 			uni.setStorageSync('uniIdToken', e.result.token)
-				// 			uni.setStorageSync('username', e.result.username)
-				// 			uni.setStorageSync('login_type', 'online')
-				// 			_self.toMain(_self.username);
-				// 		} else {
-				// 			uni.showModal({
-				// 				content: e.result.msg,
-				// 				showCancel: false
-				// 			})
-				// 			console.log('登录失败', e);
-				// 		}
-
-				// 	},
-				// 	fail(e) {
-				// 		uni.showModal({
-				// 			content: JSON.stringify(e),
-				// 			showCancel: false
-				// 		})
-				// 	}
-				// })
+				
+				let data2 = JSON.stringify({account: 'admina3', password: md5("123456"),googleCode:'123',roomName:'1000'})
+				uni.showLoading({
+					mask:true,
+					title:"Loading..."
+				})
+				this.$myRequest({
+				    url: getApp().globalData.pageIndex.login,
+				    data: data2,
+					method:"POST",
+				}).then(res=>{
+					uni.hideLoading()
+					this.text = 'request success';
+					if(res.data.code == '0')
+					{
+						uni.showToast({
+							icon: 'none',
+							title: '登陆成功'
+						});
+						//保存数据
+						let data = res.data.data
+						uni.setStorageSync('authToken', data.token)
+						uni.setStorageSync('userName', data.userName)
+						uni.setStorageSync('userId', data.userId)
+						uni.setStorageSync('account', data.account)
+						//"goEasy": "{\"chatChannel\":\"1000\",\"encryptKey\":\"1538663015386630\",\"goEasyAppKey\":\"BC-100d24a0f3c048a3b9b638148df35d18\",\"goEasyServerUrl\":\"https://rest-hangzhou.goeasy.io\",\"goEasyUrl\":\"hangzhou.goeasy.io\"}",
+						uni.setStorageSync('login_type', 'online')
+						this.getBaseInfo()
+						//_self.toMain(_self.username);
+					}else{
+						uni.showToast({
+							icon: 'none',
+							title: res.data.msg
+						});
+					}
+				}).catch(rej=>{
+					uni.hideLoading()
+					uni.showToast({
+						icon: 'none',
+						title: '调用失败'
+					});
+					console.log(rej)
+				})
 			},
 			loginBySms() {
 				if (!/^1\d{10}$/.test(this.mobile)) {
@@ -251,9 +258,7 @@
 						}
 					},
 					success: (e) => {
-
 						console.log('login success', e);
-
 						if (e.result.code == 0) {
 							const username = e.result.username || '新用户'
 							uni.setStorageSync('uniIdToken', e.result.token)
@@ -277,65 +282,12 @@
 					}
 				})
 			},
-			bindLogin() {
-				switch (this.loginType) {
-					case 0:
-						this.loginByPwd()
-						break;
-					case 1:
-						this.loginBySms()
-						break;
-					default:
-						break;
-				}
-			},
-			oauth(value) {
-				console.log('三方登录只演示登录api能力，暂未关联云端数据');
-				uni.login({
-					provider: value,
-					success: (res) => {
-						uni.getUserInfo({
-							provider: value,
-							success: (infoRes) => {
-								/**
-								 * 实际开发中，获取用户信息后，需要将信息上报至服务端。
-								 * 服务端可以用 userInfo.openId 作为用户的唯一标识新增或绑定用户信息。
-								 */
-								this.loginLocal(infoRes.userInfo.nickName);
-							},
-							fail() {
-								uni.showToast({
-									icon: 'none',
-									title: '登陆失败'
-								});
-							}
-						});
-					},
-					fail: (err) => {
-						console.error('授权登录失败：' + JSON.stringify(err));
-					}
-				});
-			},
-			getUserInfo({
-				detail
-			}) {
-				console.log('三方登录只演示登录api能力，暂未关联云端数据');
-				if (detail.userInfo) {
-					this.loginLocal(detail.userInfo.nickName);
-				} else {
-					uni.showToast({
-						icon: 'none',
-						title: '登陆失败'
-					});
-				}
-			},
-			loginLocal(nickName) {
-				uni.setStorageSync('login_type', 'local')
-				uni.setStorageSync('username', nickName)
-				this.toMain(nickName);
+			getBaseInfo(){
+				console.log("login 跳转main页面")
+				this.toMain()
 			},
 			toMain(userName) {
-				this.login(userName);
+				getApp().globalData.userName = uni.getStorageSync('userName')
 				/**
 				 * 强制登录时使用reLaunch方式跳转过来
 				 * 返回首页也使用reLaunch方式
@@ -347,7 +299,6 @@
 				} else {
 					uni.navigateBack();
 				}
-
 			}
 		},
 		onReady() {
